@@ -1,8 +1,10 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { Input, Select, Space, Button } from "antd";
+import { Input, Select, Space } from "antd";
 
-export default function NavHeader() {
+import LoginAvatar from "./LoginAvatar";
+
+export default function NavHeader(props) {
     return <div className="headerContainer">
         <div className="logoContainer">
             <div className="logo"></div>
@@ -25,8 +27,6 @@ export default function NavHeader() {
                 style={{ width: "80%" }}
             />
         </Space.Compact>
-        <div className="loginBtnContainer">
-            <Button type="primary" size="large">登录/注册</Button>
-        </div>
+        <LoginAvatar onClick={props.onClick} />
     </div>;
 }
