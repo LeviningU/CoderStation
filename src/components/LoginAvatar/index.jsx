@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { Button, Popover, List, Avatar } from "antd";
 
 export default function LoginAvatar(props) {
-    const isLogin = useSelector((state) => state.user.isLogin);
+    const {isLogin, user} = useSelector((state) => state.user);
 
     let dom = null;
 
@@ -34,7 +34,7 @@ export default function LoginAvatar(props) {
                 >
                     <Avatar
                         size="large"
-                        src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                        src={user?.avatar}
                         preview={false}
                     />
                 </Popover>

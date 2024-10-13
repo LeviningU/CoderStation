@@ -1,8 +1,13 @@
 import React from "react";
 import styles from "./index.module.css";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 
-import { Modal, Radio, Form, Input, Button, Checkbox, Row, Col } from "antd";
+import { login } from "../../redux/userSlice";
+import { useDispatch } from "react-redux";
+
+import { Modal, Radio, Form, Input, Button, Checkbox, Row, Col, message } from "antd";
+
+import { getCaptcha, userIsExist, addUser } from "../../api/user";
 
 export default function LoginForm(props) {
     const [value, setValue] = useState(1);
@@ -20,7 +25,17 @@ export default function LoginForm(props) {
         captcha: "",
     });
 
-    const captcha = `<img src="" alt="验证码" />`;
+    const [captcha, setCaptcha] = useState("");
+    const fetchCaptcha = () => {
+        getCaptcha().then((res) => {
+            setCaptcha(res);
+        });
+    };
+    useEffect(() => {
+        if (props.isModalShow) {
+            fetchCaptcha();
+        }
+    }, [props.isModalShow]);
 
     const loginFormRef = useRef(null);
     const registerFormRef = useRef(null);
@@ -32,16 +47,26 @@ export default function LoginForm(props) {
         });
     };
 
+    const dispatch = useDispatch();
     const loginHandle = () => {
         console.log("loginHandle", loginInfo);
     };
 
-    const registerHandle = () => {
-        console.log("registerHandle", registerInfo);
+    const registerHandle = async () => {
+        const res = await addUser(registerInfo);
+        if (res.data) {
+            message.success("注册成功，默认密码为 123456");
+            dispatch(login(res.data));
+            handleCancel();
+        }
+        else {
+            message.warning(res.msg);
+            fetchCaptcha();
+        }
     };
 
     const captchaClickHandle = () => {
-        console.log("captchaClickHandle");
+        fetchCaptcha();
     };
 
     const handleOk = () => {
@@ -49,8 +74,28 @@ export default function LoginForm(props) {
     };
 
     const handleCancel = () => {
+        setRegisterInfo({
+            loginId: "",
+            nickname: "",
+            captcha: "",
+        });
+        setLoginInfo({
+            loginId: "",
+            loginPwd: "",
+            captcha: "",
+            remember: false,
+        });
         props.onClose();
     };
+
+    const checkLoginIdIsExist = async () => {
+        if (registerInfo.loginId) {
+            const data = await userIsExist(registerInfo.loginId);
+            if (data.data) {
+                return Promise.reject("用户已存在");
+            }
+        }
+    }
 
     let board = null;
     if (value === 1) {
@@ -210,7 +255,7 @@ export default function LoginForm(props) {
                                 message: "请输入账号，仅此项为必填项",
                             },
                             // 验证用户是否已经存在
-                            // { validator: checkLoginIdIsExist },
+                            { validator: checkLoginIdIsExist },
                         ]}
                         validateTrigger="onBlur"
                     >
@@ -315,7 +360,10 @@ export default function LoginForm(props) {
                     buttonStyle="solid"
                     className={styles.radioGroup}
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={(e) => {
+                        setValue(e.target.value)
+                        fetchCaptcha()
+                    }}
                 >
                     <Radio value={1} className={styles.radioButton}>
                         登录
