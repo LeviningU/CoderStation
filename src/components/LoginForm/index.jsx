@@ -1,13 +1,13 @@
 import React from "react";
 import styles from "./index.module.css";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 import { login } from "../../redux/userSlice";
 import { useDispatch } from "react-redux";
 
 import { Modal, Radio, Form, Input, Button, Checkbox, Row, Col, message } from "antd";
 
-import { getCaptcha, userIsExist, addUser } from "../../api/user";
+import { getCaptchaApi, userIsExistApi, addUserApi, userLoginApi, getUserByIdApi } from "../../api/user";
 
 export default function LoginForm(props) {
     const [value, setValue] = useState(1);
@@ -26,16 +26,26 @@ export default function LoginForm(props) {
     });
 
     const [captcha, setCaptcha] = useState("");
-    const fetchCaptcha = () => {
-        getCaptcha().then((res) => {
+    
+    const fetchCaptcha = useCallback(() => {
+        setLoginInfo({
+            ...loginInfo,
+            captcha: "",
+        });
+        setRegisterInfo({
+            ...registerInfo,
+            captcha: "",
+        });
+        getCaptchaApi().then((res) => {
             setCaptcha(res);
         });
-    };
+        // eslint-disable-next-line
+    }, []);
     useEffect(() => {
         if (props.isModalShow) {
             fetchCaptcha();
         }
-    }, [props.isModalShow]);
+    }, [props.isModalShow, fetchCaptcha]);
 
     const loginFormRef = useRef(null);
     const registerFormRef = useRef(null);
@@ -47,13 +57,48 @@ export default function LoginForm(props) {
         });
     };
 
+    const resetInfo = () => {
+        setLoginInfo({
+            loginId: "",
+            loginPwd: "",
+            captcha: "",
+            remember: false,
+        });
+        setRegisterInfo({
+            loginId: "",
+            nickname: "",
+            captcha: "",
+        });
+    };
+
     const dispatch = useDispatch();
-    const loginHandle = () => {
-        console.log("loginHandle", loginInfo);
+    const loginHandle = async () => {
+        const res = await userLoginApi(loginInfo);
+        if (res.data) {
+            if (!res.data.data) {
+                message.error("账号或密码错误");
+                fetchCaptcha();
+            }
+            else if (!res.data.data.enabled) {
+                message.error("账号已被禁用");
+                fetchCaptcha();
+            }
+            else {
+                message.success("登录成功");
+                localStorage.setItem("token", res.data.token);
+                const data = await getUserByIdApi(res.data.data._id);
+                dispatch(login(data));
+                handleCancel();
+            }
+        }
+        else {
+            message.warning(res.msg);
+            fetchCaptcha();
+        }
     };
 
     const registerHandle = async () => {
-        const res = await addUser(registerInfo);
+        const res = await addUserApi(registerInfo);
         if (res.data) {
             message.success("注册成功，默认密码为 123456");
             dispatch(login(res.data));
@@ -70,27 +115,18 @@ export default function LoginForm(props) {
     };
 
     const handleOk = () => {
+        resetInfo();
         props.onClose();
     };
 
     const handleCancel = () => {
-        setRegisterInfo({
-            loginId: "",
-            nickname: "",
-            captcha: "",
-        });
-        setLoginInfo({
-            loginId: "",
-            loginPwd: "",
-            captcha: "",
-            remember: false,
-        });
+        resetInfo();
         props.onClose();
     };
 
     const checkLoginIdIsExist = async () => {
         if (registerInfo.loginId) {
-            const data = await userIsExist(registerInfo.loginId);
+            const data = await userIsExistApi(registerInfo.loginId);
             if (data.data) {
                 return Promise.reject("用户已存在");
             }
@@ -229,7 +265,7 @@ export default function LoginForm(props) {
                         >
                             登录
                         </Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="reset">
                             重置
                         </Button>
                     </Form.Item>
@@ -338,7 +374,7 @@ export default function LoginForm(props) {
                         >
                             注册
                         </Button>
-                        <Button type="primary" htmlType="submit">
+                        <Button type="primary" htmlType="reset">
                             重置
                         </Button>
                     </Form.Item>

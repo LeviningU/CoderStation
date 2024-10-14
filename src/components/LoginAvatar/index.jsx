@@ -2,14 +2,29 @@ import "./index.module.css";
 
 import React from "react";
 
-import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../../redux/userSlice";
 
 import { Button, Popover, List, Avatar } from "antd";
 
 export default function LoginAvatar(props) {
     const {isLogin, user} = useSelector((state) => state.user);
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     let dom = null;
+
+    const listClickHandler = (item) => {
+        if (item === "个人中心") {
+            // window.location.href = "/user";
+        } else if (item === "退出登录") {
+            localStorage.removeItem("token");
+            dispatch(logout());
+            navigate("/");
+        }
+    }
 
     if (isLogin) {
         dom = (
@@ -23,6 +38,9 @@ export default function LoginAvatar(props) {
                                 <List.Item
                                     size="large"
                                     style={{ cursor: "pointer" }}
+                                    onClick={() => {
+                                        listClickHandler(item);
+                                    }}
                                 >
                                     {item}
                                 </List.Item>
@@ -35,7 +53,6 @@ export default function LoginAvatar(props) {
                     <Avatar
                         size="large"
                         src={user?.avatar}
-                        preview={false}
                     />
                 </Popover>
             </div>
