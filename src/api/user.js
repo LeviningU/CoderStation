@@ -43,3 +43,10 @@ export function getInfoApi() {
         method: 'get'
     });
 }
+
+export function getScoreRankApi() {
+    return request({
+        url: '/api/user/pointsrank',
+        method: 'get'
+    });
+}

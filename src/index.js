@@ -3,6 +3,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 
 import "antd/dist/reset.css";
+import "./fonts/iconfont.css";
 import zhCN from "antd/es/locale/zh_CN";
 import { ConfigProvider } from "antd";
 

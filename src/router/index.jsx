@@ -1,6 +1,7 @@
 import Issues from "../pages/Issues";
 import Books from "../pages/Books";
 import Interview from "../pages/Interview";
+import AddIssue from "../pages/AddIssue";
 
 import { Routes, Route, Navigate } from "react-router-dom";
 
@@ -11,6 +12,7 @@ export default function Router() {
             <Route path="/issues" element={<Issues />} />
             <Route path="/books" element={<Books />} />
             <Route path="/interviews" element={<Interview />} />
+            <Route path="/addissue" element={<AddIssue />}></Route>
             <Route path="*" element={<h1>404</h1>} />
         </Routes>
     );
