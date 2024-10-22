@@ -1,4 +1,13 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { updateUserInfoApi } from '../api/user';
+
+export const updateUserInfoAsync = createAsyncThunk(
+    'user/updateUserInfo',
+    async (data, thunkAPI) => {
+        await updateUserInfoApi(data.userId, data.newInfo);
+        thunkAPI.dispatch(updateUser(data.newInfo));
+    }
+);
 
 const userSlice = createSlice({
     name: 'user',
@@ -20,9 +29,17 @@ const userSlice = createSlice({
         },
         setStatus: (state, action) => {
             state.isLogin = action.payload;
+        },
+        updateUser: (state, action) => {
+            state.user = {
+                ...state.user,
+                ...action.payload
+            }
         }
     },
 });
+
+const {updateUser} = userSlice.actions;
 
 export const { login, logout } = userSlice.actions;
 

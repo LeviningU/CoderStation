@@ -50,3 +50,11 @@ export function getScoreRankApi() {
         method: 'get'
     });
 }
+
+export function updateUserInfoApi(id, user) {
+    return request({
+        url: '/api/user/' + id,
+        method: 'patch',
+        data: user
+    });
+}

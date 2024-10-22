@@ -13,10 +13,12 @@ import { typeColor } from "../../utils/constant";
 
 import { getUserByIdApi } from "../../api/user";
 
+import { useNavigate } from "react-router-dom";
+
 export default function IssueItem(props) {
 
     const { typeList } = useSelector((state) => state.type);
-    const dispatch = useDispatch();
+    const dispatch = useDispatch()
 
     useEffect(() => {
         if (!typeList.length) {
@@ -36,6 +38,8 @@ export default function IssueItem(props) {
     const type = typeList.find((item) => item._id === props.issueInfo.typeId);
     const index = typeList.indexOf(type);
 
+    const navigate = useNavigate();
+
     return <div className={styles.container}>
         <div className={styles.issueNum}>
             <div>{props.issueInfo.commentNumber}</div>
@@ -46,7 +50,7 @@ export default function IssueItem(props) {
             <div>浏览</div>
         </div>
         <div className={styles.issueContainer}>
-            <div className={styles.top}>{props.issueInfo.issueTitle}</div>
+            <div className={styles.top} onClick={() => {navigate(`/issues/${props.issueInfo._id}`)}}>{props.issueInfo.issueTitle}</div>
             <div className={styles.bottom}>
                 <div className={styles.left}>
                     <Tag color={typeColor[index % typeColor.length]}>{type?.typeName}</Tag>

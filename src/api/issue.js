@@ -15,3 +15,18 @@ export function addIssueApi(data) {
         data
     })
 }
+
+export function getIssueByIdApi(id) {
+    return request({
+        url: "/api/issue/" + id,
+        method: "get"
+    })
+}
+
+export function updateIssueApi(id, data) {
+    return request({
+        url: "/api/issue/" + id,
+        method: "put",
+        data
+    })
+}
