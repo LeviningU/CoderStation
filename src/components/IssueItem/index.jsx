@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
 import { getTypeList } from "../../redux/typeSlice";
@@ -27,7 +27,7 @@ export default function IssueItem(props) {
         // eslint-disable-next-line
     }, [typeList]);
 
-    const [userInfo, setUserInfo] = React.useState({});
+    const [userInfo, setUserInfo] = useState({});
 
     useEffect(() => {
         getUserByIdApi(props.issueInfo.userId).then((res) => {
