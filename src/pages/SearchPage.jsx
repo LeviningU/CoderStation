@@ -2,7 +2,6 @@ import React from "react";
 import { useState, useEffect } from "react";
 
 import PageHeader from "../components/PageHeader";
-import IssueItem from "../components/IssueItem";
 import AddIssueBtn from "../components/AddIssueBtn";
 import Recommend from "../components/Recommend";
 import ScoreRank from "../components/ScoreRank";
@@ -15,6 +14,7 @@ import { useLocation } from "react-router-dom";
 import styles from "./SearchPage.module.css";
 
 import { getIssueByPageApi } from "../api/issue";
+import { getBookByPageApi } from "../api/book";
 
 export default function SearchPage() {
     const { state } = useLocation();
@@ -54,14 +54,15 @@ export default function SearchPage() {
             });
         }
         else {
-            // getBookByPageApi(searchParam).then(({data}) => {
-            //     setsearchInfo(data.data);
-            //     setPageInfo({
-            //         current: data.currentPage,
-            //         pageSize: data.eachPage
-            //     });
-            //     setTotal(data.count);
-            // });
+            searchParam.bookTitle = state.value;
+            getBookByPageApi(searchParam).then(({data}) => {
+                setsearchInfo(data.data);
+                setPageInfo({
+                    current: data.currentPage,
+                    pageSize: data.eachPage
+                });
+                setTotal(data.count);
+            });
         }
         // eslint-disable-next-line
     }, [pageInfo.current, pageInfo.pageSize, state.value, state.searchOption]);
