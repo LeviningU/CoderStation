@@ -3,7 +3,8 @@ import NavHeader from "./components/NavHeader";
 import PageFooter from "./components/PageFooter";
 import LoginForm from "./components/LoginForm";
 
-import Router from "./router";
+// import Router from "./router";
+import RouterBefore from "./router/RouterBefore";
 
 import { useState, useEffect } from "react";
 
@@ -49,7 +50,7 @@ function App() {
                 <NavHeader onClick={handleClick} />
             </Header>
             <Content className="content">
-                <Router></Router>
+                <RouterBefore></RouterBefore>
             </Content>
             <Footer className="footer">
                 <PageFooter />

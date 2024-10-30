@@ -18,7 +18,7 @@ export default function LoginAvatar(props) {
 
     const listClickHandler = (item) => {
         if (item === "个人中心") {
-            // window.location.href = "/user";
+            navigate("/personal");
         } else if (item === "退出登录") {
             localStorage.removeItem("token");
             dispatch(logout());
