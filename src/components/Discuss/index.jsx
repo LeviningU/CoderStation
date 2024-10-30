@@ -57,7 +57,18 @@ export default function Discuss(props) {
             })
         }
         else if (props.commentType === "book" && props.id && pageInfo.current && pageInfo.pageSize) {
-            // TODO
+            getBookCommentByIdApi(props.id, {
+                current: pageInfo.current,
+                pageSize: pageInfo.pageSize
+            }).then(async ({data}) => {
+                setTotal(data.count);
+                data.data.map(async (item) => {
+                    const res = await getUserByIdApi(item.userId)
+                    item.userInfo = res.data;
+                    return item;
+                });
+                setCommentList(data.data);
+            })
         }
         // eslint-disable-next-line
     }, [props.commentType, props.id, pageInfo.current, pageInfo.pageSize, refresh])
@@ -98,7 +109,25 @@ export default function Discuss(props) {
             })
         }
         else if (props.commentType === "book") {
-            // TODO
+            addCommentApi({
+                commentContent: editorRef.current.getInstance().getHTML(),
+                typeId: props.typeId,
+                issueId: null,
+                bookId: props.id,
+                userId: userInfo._id,
+                commentType: 2
+            }).then(() => {
+                message.success("评论成功，积分+4");
+                editorRef.current.getInstance().setMarkdown(" ");
+                setRefresh(!refresh);
+                props.onSubmit && props.onSubmit();
+                dispatch(updateUserInfoAsync({
+                    userId: userInfo._id,
+                    newInfo: {
+                        points: userInfo.points + 4
+                    }
+                }))
+            })
         }
     }
 

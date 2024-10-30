@@ -39,6 +39,7 @@ function searchType(props, navigate) {
 function normalType(props, navigate) {
     return (
         <Card
+            onClick={() => {navigate(`/books/${props.bookInfo._id}`)}}
             hoverable
             className={styles.bookDesc}
             style={{ width: 210, padding: 10, marginTop: 10 }}
@@ -51,7 +52,6 @@ function normalType(props, navigate) {
             }
         >
             <Card.Meta
-                onClick={() => {navigate(`/books/${props.bookInfo._id}`)}}
                 title={props.bookInfo.bookTitle}
                 description={<div style={{display: "flex", justifyContent: "space-between"}}>
                     <span>浏览数：{props.bookInfo.scanNumber}</span>
