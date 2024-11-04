@@ -58,3 +58,14 @@ export function updateUserInfoApi(id, user) {
         data: user
     });
 }
+
+export function checkPasswordApi(id, password) {
+    return request({
+        url: '/api/user/passwordcheck',
+        method: 'post',
+        data: {
+            userId: id,
+            loginPwd: password
+        }
+    });
+}

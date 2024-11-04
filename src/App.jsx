@@ -45,7 +45,9 @@ function App() {
     }
 
     return <div className="App">
-        <Layout>
+        <Layout 
+            style={{ overflowX: "hidden" }}
+        >
             <Header className="header">
                 <NavHeader onClick={handleClick} />
             </Header>

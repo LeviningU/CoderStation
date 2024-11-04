@@ -87,7 +87,7 @@ export default function LoginForm(props) {
                 message.success("登录成功");
                 localStorage.setItem("token", res.data.token);
                 const data = await getUserByIdApi(res.data.data._id);
-                dispatch(login(data));
+                dispatch(login(data.data));
                 handleCancel();
             }
         }
@@ -157,6 +157,7 @@ export default function LoginForm(props) {
                         <Input
                             placeholder="请输入你的登录账号"
                             value={loginInfo.loginId}
+                            autoComplete="username"
                             onChange={(e) =>
                                 updateInfo(
                                     loginInfo,
@@ -181,6 +182,7 @@ export default function LoginForm(props) {
                         <Input.Password
                             placeholder="请输入你的登录密码，新用户默认为123456"
                             value={loginInfo.loginPwd}
+                            autoComplete="current-password"
                             onChange={(e) =>
                                 updateInfo(
                                     loginInfo,
@@ -298,6 +300,7 @@ export default function LoginForm(props) {
                         <Input
                             placeholder="请输入账号"
                             value={registerInfo.loginId}
+                            autoComplete="username"
                             onChange={(e) =>
                                 updateInfo(
                                     registerInfo,

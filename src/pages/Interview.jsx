@@ -7,7 +7,7 @@ import { getTypeList } from "../redux/typeSlice";
 
 import styles from "./Interview.module.css";
 
-import { Tree, BackTop } from "antd";
+import { Tree, FloatButton } from "antd";
 import PageHeader from "../components/PageHeader";
 
 import { getInterviewByIdApi } from "../api/interview";
@@ -42,7 +42,8 @@ export default function Interview() {
             });
             setTreeData(interviewData);
         }
-    }, []);
+        // eslint-disable-next-line
+    }, [interview.length, type.length]);
 
     function handleSelect(id) {
         getInterviewByIdApi(id).then((res) => {
@@ -86,6 +87,6 @@ export default function Interview() {
                 {interviewDetail}
             </div>
         </div>
-        <BackTop />
+        <FloatButton.BackTop />
     </div>
 }
